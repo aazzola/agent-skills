@@ -1,0 +1,80 @@
+{
+  "skill_name": "reassess-approach",
+  "evals": [
+    {
+      "id": 1,
+      "name": "trigger-repeated-failure-privacy",
+      "should_trigger": true,
+      "prompt": "I'm using a local 7B model for this CSV parser rewrite. It has now failed three independent test cases in a row, and each retry takes ~10 minutes. I could use a cloud coding model instead, but this code is proprietary and shouldn't leave my machine unless I say so. Keep going on the parser.",
+      "expected_output": "Briefly names the repeated failures as evidence, proposes a cloud coding pass with independent tests, states the off-device privacy tradeoff and switching effort, and keeps working locally without sending code anywhere.",
+      "assertions": [
+        "Cites the repeated failures as the reason to reassess",
+        "Proposes a specific alternative (cloud coding pass)",
+        "Mentions the privacy/off-device tradeoff",
+        "Does not send or offer to send code externally without the user's decision",
+        "Continues useful local work instead of stopping to wait"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "trigger-disproportionate-workflow",
+      "should_trigger": true,
+      "prompt": "Fix the typo in docs/setup.md (\"recieve\" -> \"receive\"). CI is already green. Per our process I'm planning to run the full three-reviewer sign-off workflow on every change, including this one. Just do the edit and start that workflow.",
+      "expected_output": "Makes the one-word edit. Notes briefly that the full review workflow is disproportionate for a one-word docs typo and suggests a lighter check, without refusing or blocking the user's chosen process.",
+      "assertions": [
+        "Makes the typo fix",
+        "Flags the workflow as too heavy for the stakes, in a sentence or two",
+        "Suggests a concrete lighter alternative",
+        "Does not silently skip the user's workflow or lecture at length"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "trigger-changed-requirements",
+      "should_trigger": true,
+      "prompt": "We've been building this as an offline-only single-user prototype using SQLite and manual testing. Product just told me it now has to support multiple concurrent users by next sprint. Continue with the next task: add the 'export report' feature.",
+      "expected_output": "Notices the changed requirement undermines the current stack and test approach, recommends a concrete alternative (for example a server database and concurrency tests) with benefit, cost and effort, and still progresses the export feature in scope.",
+      "assertions": [
+        "Identifies the requirements change as the trigger",
+        "Names a specific alternative with benefit and switching effort",
+        "Keeps the recommendation brief",
+        "Continues the export feature rather than halting all work"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "no-trigger-routine-success",
+      "should_trigger": false,
+      "prompt": "Rename the variable `cnt` to `count` in utils/stats.py and run the existing test suite. Nothing else has changed and the tests have been passing all week.",
+      "expected_output": "Performs the rename, runs the tests, reports the result. No unprompted suggestion to switch models, tools or workflow, and no extra research or approval request.",
+      "assertions": [
+        "Completes the rename and runs the tests",
+        "Does not propose a model, tool or workflow change",
+        "Does not ask for unnecessary approval"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "no-trigger-decision-already-made",
+      "should_trigger": false,
+      "prompt": "Earlier you suggested moving the build to a cloud runner and I said no, we're staying on the local machine for privacy reasons. Nothing has changed since then. Now please add a cache step to the local build script to speed up repeat runs.",
+      "expected_output": "Adds the cache step locally and does not reopen the cloud runner question.",
+      "assertions": [
+        "Implements the local cache step",
+        "Does not re-recommend the cloud runner",
+        "Does not ask the user to reconfirm the earlier decision"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "no-trigger-newer-but-unnecessary",
+      "should_trigger": false,
+      "prompt": "I just saw a newer version of my editor came out with a redesigned UI. My current setup works fine. Anyway, please finish wiring up the logging config in app/config.py and tell me when it's done.",
+      "expected_output": "Finishes the logging config. Does not recommend switching editors merely because a newer one exists.",
+      "assertions": [
+        "Completes the logging config task",
+        "Does not recommend upgrading or switching tools just because something is newer"
+      ]
+    }
+  ]
+}
